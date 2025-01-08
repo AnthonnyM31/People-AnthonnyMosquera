@@ -10,6 +10,11 @@ public class PersonRepository
 
     public string StatusMessage { get; set; }
 
+    public PersonRepository(string dbPath)
+    {
+        _dbPath = dbPath;
+    }
+
     private void Init()
     {
         if (conn != null)
@@ -17,11 +22,6 @@ public class PersonRepository
 
         conn = new SQLiteConnection(_dbPath);
         conn.CreateTable<Person>();
-    }
-
-    public PersonRepository(string dbPath)
-    {
-        _dbPath = dbPath;
     }
 
     public void AddNewPerson(string name)
@@ -44,25 +44,28 @@ public class PersonRepository
         }
         catch (Exception ex)
         {
-           
+          
             StatusMessage = string.Format("Failed to add {0}. Error: {1}", name, ex.Message);
         }
     }
-
 
     public List<Person> GetAllPeople()
     {
         try
         {
+            
             Init();
-            // Retrieve a list of Person objects from the database
+
+            // se agarran todos los registros de la tabla y se guardan en una lista
             return conn.Table<Person>().ToList();
         }
         catch (Exception ex)
         {
+            // en caso de cualquier excepcion se enviará el mensaje
             StatusMessage = string.Format("Failed to retrieve data. {0}", ex.Message);
         }
 
+        // y si sale mal va a regresar una lista vacia
         return new List<Person>();
     }
 }
